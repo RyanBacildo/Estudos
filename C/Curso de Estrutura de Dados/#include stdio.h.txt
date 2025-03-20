@@ -1,0 +1,190 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "tadmatriz.h"
+
+// Variáveis globais para as matrizes
+tadmatriz A = NULL, B = NULL, C = NULL, D = NULL;
+
+void exibir_matriz(tadmatriz mat) {
+    if (!mat) return;
+    for (int i = 0; i < get_linhas(mat); i++) {
+        for (int j = 0; j < get_colunas(mat); j++) {
+            printf("%8.2f ", get_elem(mat, i, j));
+        }
+        printf("\n");
+    }
+}
+
+tadmatriz obter_matriz(char nome) {
+    switch(nome) {
+        case 'A': return A;
+        case 'B': return B;
+        case 'C': return C;
+        case 'D': return D;
+        default: return NULL;
+    }
+}
+
+tadmatriz processar_operando(const char *operando) {
+    if (strlen(operando) == 1) {
+        return obter_matriz(operando[0]);
+    }
+    
+    // Para casos como -B ou TB
+    tadmatriz base = obter_matriz(operando[1]);
+    if (!base) return NULL;
+    
+    if (operando[0] == '-') return neg(base);
+    if (operando[0] == 'T') return transp(base);
+    
+    return NULL;
+}
+
+tadmatriz processa_linha(const char *linha) {
+    char operandos[3][10] = {{0}};
+    char operadores[2] = {0};
+    int pos = 0, op_pos = 0;
+    
+    // Separar operandos e operadores
+    char temp[10] = {0};
+    int temp_pos = 0;
+    
+    for (int i = 0; linha[i]; i++) {
+        if (linha[i] == ' ') {
+            if (temp_pos > 0) {
+                strcpy(operandos[pos++], temp);
+                memset(temp, 0, sizeof(temp));
+                temp_pos = 0;
+            }
+            continue;
+        }
+        if (linha[i] == '+' || linha[i] == 'x') {
+            if (temp_pos > 0) {
+                strcpy(operandos[pos++], temp);
+                memset(temp, 0, sizeof(temp));
+                temp_pos = 0;
+            }
+            operadores[op_pos++] = linha[i];
+            continue;
+        }
+        temp[temp_pos++] = linha[i];
+    }
+    if (temp_pos > 0) {
+        strcpy(operandos[pos++], temp);
+    }
+    
+    // Processar operação
+    tadmatriz resultado = NULL;
+    
+    if (pos == 1) {
+        // Operação unária
+        resultado = processar_operando(operandos[0]);
+    }
+    else if (pos == 2) {
+        // Operação binária
+        tadmatriz op1 = processar_operando(operandos[0]);
+        tadmatriz op2 = processar_operando(operandos[1]);
+        
+        if (op1 && op2) {
+            if (operadores[0] == '+') resultado = soma(op1, op2);
+            else if (operadores[0] == 'x') resultado = multi(op1, op2);
+            
+            // Limpar operandos temporários
+            if (strlen(operandos[0]) > 1) free(op1);
+            if (strlen(operandos[1]) > 1) free(op2);
+        }
+    }
+    
+    return resultado;
+}
+
+void salvar_resultado(tadmatriz resultado, const char *nome_arquivo) {
+    if (!resultado) return;
+    
+    // Remover a extensão .txt se presente no nome do arquivo
+    char nome_base[256];
+    strcpy(nome_base, nome_arquivo);
+    char *ponto = strrchr(nome_base, '.');
+    if (ponto) *ponto = '\0';
+    
+    // Criar nome do arquivo com extensão
+    char nome_completo[256];
+    sprintf(nome_completo, "%s.txt", nome_base);
+    
+    // Salvar resultado
+    salva(resultado, nome_completo);
+    
+    // Exibir resultado
+    printf("Resultado da operação salvo em %s:\n", nome_completo);
+    exibir_matriz(resultado);
+    printf("\n");
+    
+    // Liberar memória do resultado
+    free(resultado);
+}
+
+void processa_matops(const char *arquivo) {
+    FILE *arq = fopen(arquivo, "rt");
+    if (!arq) {
+        printf("Erro ao abrir o arquivo %s\n", arquivo);
+        return;
+    }
+
+    char linha[256];
+    while (fgets(linha, sizeof(linha), arq)) {
+        // Remover o \n do final da linha
+        linha[strcspn(linha, "\n")] = 0;
+        
+        // Processar linha e salvar resultado
+        tadmatriz resultado = processa_linha(linha);
+        if (resultado) {
+            char nome_resultado[256];
+            sprintf(nome_resultado, "R_%s.txt", linha);
+            // Substituir caracteres inválidos para nome de arquivo
+            for (int i = 0; nome_resultado[i]; i++) {
+                if (nome_resultado[i] == ' ' || nome_resultado[i] == '+' || 
+                    nome_resultado[i] == 'x' || nome_resultado[i] == '-') {
+                    nome_resultado[i] = '_';
+                }
+            }
+            salvar_resultado(resultado, nome_resultado);
+        }
+    }
+
+    fclose(arq);
+}
+
+int main() {
+    // Carregar matrizes base
+    A = carrega("A.txt");
+    B = carrega("B.txt");
+    C = carrega("C.txt");
+    D = carrega("D.txt");
+
+    if (!A || !B || !C || !D) {
+        printf("Erro ao carregar uma ou mais matrizes base\n");
+        return 1;
+    }
+
+    printf("Matrizes carregadas:\n\nMatriz A:\n");
+    exibir_matriz(A);
+    printf("\nMatriz B:\n");
+    exibir_matriz(B);
+    printf("\nMatriz C:\n");
+    exibir_matriz(C);
+    printf("\nMatriz D:\n");
+    exibir_matriz(D);
+    printf("\n");
+
+    // Processar arquivo de operações
+    processa_matops("matops.txt");
+
+    // Liberar memória
+    free(A);
+    free(B);
+    free(C);
+    free(D);
+
+    return 0;
+}	

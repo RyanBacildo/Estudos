@@ -1,0 +1,25 @@
+nome,sigla,regiao
+Universidade Federal do Espirito Santo Campus Goiabeiras,UFES,Sudeste
+Universidade Federal de Alagoas Campus A. C. Simoes,UFAL,Nordeste
+Universidade Federal do Amapa Campus Macapa,UNIFAP,Norte
+Universidade Federal do Amazonas Campus Manaus,UFAM,Norte
+Universidade Federal da Bahia Campus Educacao,UFSBA,Nordeste
+Universidade Federal do Ceara Campus Fortaleza,UFC,Nordeste
+Universidade de Brasilia Campus Darcy Ribeiro,UNB,Centro-Oeste
+Universidade Federal do Espirito Santo Campus Jeronimo Monteiro,UFES,Sudeste
+Universidade Federal de Goias Campus Samambaia,UFG,Centro-Oeste
+Universidade Federal do Maranhao Campus Sao Luis,UFMA,Nordeste
+Universidade Federal de Mato Grosso Campus Cuiaba,UFMT,Centro-Oeste
+Universidade Federal de Mato Grosso do Sul Campus Campo Grande,UMS,Centro-Oeste
+Universidade Federal de Minas Gerais Campus Pampulha,UFMGS,Sudeste
+Universidade do Estado do Para Campus Belem,UEPA,Norte
+Universidade Federal da Paraiba Campus Joao Pessoa,UFPB,Nordeste
+Universidade Federal do Rio Grande do Sul Campus Porto Alegre,UFRGS,Sul
+Universidade Federal do Rio Grande do Norte Campus Lagoa Nova,UFRN,Nordeste
+Universidade Federal do Rio de Janeiro Campus Ilha do Fundao,UFRJ,Sudeste
+Universidade Federal do Rio Grande do Norte Campus Natal,UFRN,Nordeste
+Universidade Federal de Goias Campus Cidade Universitaria,UFGS,Sul
+Universidade Federal do Rio Grande do Norte Campus Natal,UFRN,Nordeste
+Universidade Federal do Rio de Janeiro Campus Fundao,UFRJ,Sudeste
+Universidade Regional do Sudoeste Campus Rio Branco,URS,Norte
+Universidade Federal do Rio Grande do Sul Campus Porto Alegre,UFRGS,Sul
